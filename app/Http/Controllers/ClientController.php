@@ -19,11 +19,11 @@ class ClientController extends Controller
         protected ClientService $clientService
     ) {}
 
+    
+
 public function index(Request $request): Response
     {
-        if (!Auth::user()->hasPermissionTo('view-clients')) {
-            abort(403, 'Unauthorized action.');
-        }
+       
 
         $search = $request->input('search');
         $clients = $this->clientService->all(perPage: 15, search: $search);
@@ -56,16 +56,24 @@ public function index(Request $request): Response
                          ->with('success', 'Client created successfully.');
     }
 
-    public function show(int $id): Response
+    public function show(int $id, Request $request): Response
     {
         if (!Auth::user()->hasPermissionTo('view-clients')) {
             abort(403, 'Unauthorized action.');
         }
-
+    
         $client = $this->clientService->find($id);
-
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $balanceMovements = $this->clientService->getBalanceMovements($id, 10, $startDate, $endDate);
+    
         return Inertia::render('Clients/Show', [
             'client' => $client,
+            'balanceMovements' => $balanceMovements,
+            'filters' => [
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]
         ]);
     }
 
@@ -140,4 +148,6 @@ public function index(Request $request): Response
             ]
         ]);
     }
+
+    
 }

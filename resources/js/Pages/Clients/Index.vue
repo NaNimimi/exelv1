@@ -35,7 +35,7 @@
       <div class="w-full h-full text-gray-100 flex flex-col">
         <!-- Header Section -->
         <div class="flex justify-between items-center px-8 py-6">
-          <h1 class="text-4xl font-extrabold tracking-tight text-white">klientlar</h1>
+          <h1 class="text-4xl font-extrabold tracking-tight text-white">Klientlar</h1>
           
           <!-- Flex container for input and button -->
           <div class="flex items-center space-x-4">
@@ -57,8 +57,6 @@
             </button>
           </div>
         </div>
-
-
 
         <!-- Table Card -->
         <div class="flex-1 px-8 pb-8 overflow-auto">
@@ -85,31 +83,28 @@
                     <td class="p-6 text-gray-100 font-medium">{{ client.first_name }}</td>
                     <td class="p-6 text-gray-100 font-medium">{{ client.lastname }}</td>
                     <td class="p-6 text-gray-400">{{ client.company_name }}</td>
-                    <td class="p-6 text-gray-100 font-medium">{{ client.balance }}UZS</td>
-                    <td class="p-6 flex space-x-4">
+                    <td class="p-6 text-gray-100 font-medium">{{ client.balance }} UZS</td>
+                    <td class="p-6 flex space-x-4 items-center">
                       <button
                         @click="openEditModal(client)"
                         class="text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out"
                         title="Edit Client"
                       >
-                        <font-awesome-icon :icon="['fas', 'user-pen']" />
-
+                        <font-awesome-icon :icon="['fas', 'user-pen']" class="w-5 h-5" />
                       </button>
-                      <button
-                        @click="openModal(client)"
+                      <Link
+                        :href="route('clients.show', client.id)"
                         class="text-green-400 hover:text-green-300 transition duration-150 ease-in-out"
                         title="View Client"
                       >
-                      <font-awesome-icon :icon="['fas', 'file-lines']" />
-                      </button>
+                        <font-awesome-icon :icon="['fas', 'file-lines']" class="w-5 h-5" />
+                      </Link>
                       <button
                         @click="openBalanceModal(client)"
-                        class="text-yellow-400 hover:text-yellow-300 transition duration-150 ease-in-out"
+                        class="bg-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-700 transform transition-all duration-300 ease-in-out hover:scale-105"
                         title="Add Balance"
                       >
-                      <button class="bg-indigo-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-700 transform transition-all duration-300 ease-in-out hover:scale-105">
                         Pull berish
-                      </button>
                       </button>
                     </td>
                   </tr>
@@ -137,77 +132,6 @@
                 >
                   <span v-html="link.label"></span>
                 </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Modal for Viewing Client -->
-        <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-auto">
-            <div class="p-8">
-              <!-- Modal Header -->
-              <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-white">Client Details</h2>
-                <button 
-                  @click="closeModal"
-                  class="text-gray-400 hover:text-white transition duration-150"
-                >
-                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <!-- Client Details Content -->
-              <div v-if="selectedClient" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">ID</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.id }}</p>
-                </div>
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Ism</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.first_name }}</p>
-                </div>
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Familiya</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.lastname }}</p>
-                </div>
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Kompany</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.company_name }}</p>
-                </div>
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Balanci</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.balance }}UZS</p>
-                </div>
-                <div>
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Address</strong>
-                  <p class="text-gray-100 text-lg font-medium mt-2">{{ selectedClient.address }}</p>
-                </div>
-                <div class="md:col-span-2">
-                  <strong class="text-gray-400 text-sm uppercase tracking-wider">Nomeri</strong>
-                  <ul class="mt-2 space-y-2">
-                    <li 
-                      v-for="phone in selectedClient.phones" 
-                      :key="phone.id" 
-                      class="text-gray-100 text-lg hover:bg-gray-700 transition-all duration-200 ease-in-out px-4 py-2 rounded-lg"
-                    >
-                      {{ phone.phone }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <!-- Modal Footer -->
-              <div class="mt-8 flex justify-end space-x-4">
-                <button
-                  @click="closeModal"
-                  class="px-6 py-3 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition duration-300"
-                >
-                  Yopish
-                </button>
-          
               </div>
             </div>
           </div>
@@ -241,8 +165,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3'
 import { router } from '@inertiajs/vue3'
-
-import { ref,watch } from 'vue'
+import { ref, watch } from 'vue'
 import ApplicationMark from '@/Components/ApplicationMark.vue'
 import Banner from '@/Components/Banner.vue'
 import NavLink from '@/Components/NavLink.vue'
@@ -252,14 +175,9 @@ import { debounce } from 'lodash'
 import AddBalance from '@/Pages/Clients/AddBalance.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPen } from '@fortawesome/free-solid-svg-icons'
-import { faFileLines } from '@fortawesome/free-solid-svg-icons'
+import { faUserPen, faFileLines } from '@fortawesome/free-solid-svg-icons'
 
-
-library.add(faUserPen)
-library.add(faFileLines)
-
-
+library.add(faUserPen, faFileLines)
 
 defineProps({
   title: String,
@@ -268,22 +186,11 @@ defineProps({
   filters: Object
 })
 
-const isModalOpen = ref(false)
 const isCreateModalOpen = ref(false)
 const isEditModalOpen = ref(false)
 const isBalanceModalOpen = ref(false)
 const selectedClient = ref(null)
 const searchQuery = ref('')
-
-const openModal = (client) => {
-  selectedClient.value = client
-  isModalOpen.value = true
-}
-
-const closeModal = () => {
-  isModalOpen.value = false
-  selectedClient.value = null
-}
 
 const openCreateModal = () => {
   isCreateModalOpen.value = true
@@ -328,4 +235,3 @@ watch(searchQuery, () => {
   debouncedSearch()
 })
 </script>
-```

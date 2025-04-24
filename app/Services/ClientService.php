@@ -163,4 +163,20 @@ class ClientService
             'updated_at' => $client->updated_at->toIso8601String(),
         ];
     }
+
+    public function getBalanceMovements(int $clientId, int $perPage = 10, ?string $startDate = null, ?string $endDate = null): LengthAwarePaginator
+    {
+        $query = BalanceMovement::where('client_id', $clientId)
+            ->orderBy('created_at', 'desc');
+    
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate . ' 23:59:59']);
+        } elseif ($startDate) {
+            $query->where('created_at', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->where('created_at', '<=', $endDate . ' 23:59:59');
+        }
+    
+        return $query->paginate($perPage)->appends(request()->query());
+    }
 }
