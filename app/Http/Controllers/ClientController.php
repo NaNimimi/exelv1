@@ -6,8 +6,11 @@ use App\Services\ClientService;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use Illuminate\Http\RedirectResponse;
+use App\Models\PaymentType;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Exports\ClientsExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -19,19 +22,16 @@ class ClientController extends Controller
         protected ClientService $clientService
     ) {}
 
-    
-
-public function index(Request $request): Response
+    public function index(Request $request): Response
     {
-       
-
         $search = $request->input('search');
         $clients = $this->clientService->all(perPage: 15, search: $search);
 
         return Inertia::render('Clients/Index', [
             'clients' => $clients,
             'title' => 'Clients Dashboard',
-            'filters' => ['search' => $search]
+            'filters' => ['search' => $search],
+            'paymentTypes' => $this->clientService->getPaymentTypes() // Add paymentTypes
         ]);
     }
 
@@ -56,11 +56,12 @@ public function index(Request $request): Response
                          ->with('success', 'Client created successfully.');
     }
 
-    public function show(int $id, Request $request): Response
+    public function show( $id, Request $request): Response
     {
         if (!Auth::user()->hasPermissionTo('view-clients')) {
             abort(403, 'Unauthorized action.');
         }
+        $id = (int) $id;
     
         $client = $this->clientService->find($id);
         $startDate = $request->input('start_date');
@@ -123,6 +124,8 @@ public function index(Request $request): Response
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0.01',
             'comment' => 'required|string|max:255',
+            'payment_type_id' => 'required|exists:payment_types,id',
+            'operation' => 'required|in:add,subtract',
         ]);
 
         $this->clientService->addBalance($id, $validated);
@@ -133,8 +136,6 @@ public function index(Request $request): Response
 
     public function getByPhone(string $phone): JsonResponse
     {
-    
-
         $client = Client::with('phones')
             ->whereHas('phones', fn($q) => $q->where('phone', $phone))
             ->firstOrFail();
@@ -148,6 +149,21 @@ public function index(Request $request): Response
             ]
         ]);
     }
-
+    public function exportAll()
+    {
+        \Log::info('Exporting all clients');
+        $clientsCount = Client::count();
+        \Log::info('Clients count: ' . $clientsCount);
+        $export = new ClientsExport();
+        return Excel::download($export, 'all_clients.xlsx');
+    }
     
+    public function exportClient(int $id, Request $request)
+    {
+        // if (!Auth::user()->hasPermissionTo('export-clients')) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+    
+        return $this->clientService->exportClient($id);
+    }
 }

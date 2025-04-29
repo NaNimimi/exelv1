@@ -122,6 +122,7 @@
                     <th class="p-6 text-left font-semibold text-base uppercase tracking-wider text-gray-400">Summa</th>
                     <th class="p-6 text-left font-semibold text-base uppercase tracking-wider text-gray-400">Yangi Balans</th>
                     <th class="p-6 text-left font-semibold text-base uppercase tracking-wider text-gray-400">Izoh</th>
+                    <th class="p-6 text-left font-semibold text-base uppercase tracking-wider text-gray-400">Bugalter</th>
                     <th class="p-6 text-left font-semibold text-base uppercase tracking-wider text-gray-400">Sana</th>
                   </tr>
                 </thead>
@@ -140,6 +141,7 @@
                     </td>
                     <td class="p-6 text-gray-100 font-medium text-lg">{{ movement.new_balance }} UZS</td>
                     <td class="p-6 text-gray-400 text-lg">{{ movement.comment }}</td>
+                    <td class="p-6 text-gray-100 font-medium text-lg">{{ movement.user?.name || 'Unknown' }}</td>
                     <td class="p-6 text-gray-400 text-lg">{{ new Date(movement.created_at).toLocaleDateString() }}</td>
                   </tr>
                 </tbody>
@@ -187,7 +189,6 @@ import ApplicationMark from '@/Components/ApplicationMark.vue'
 import Banner from '@/Components/Banner.vue'
 import NavLink from '@/Components/NavLink.vue'
 
-// Define props with default for filters
 const props = defineProps({
   client: Object,
   balanceMovements: Object,
@@ -197,12 +198,10 @@ const props = defineProps({
   }
 })
 
-// Initialize with filters prop values
 const startDate = ref(props.filters.start_date || '')
 const endDate = ref(props.filters.end_date || new Date().toISOString().split('T')[0]) // Default to today
 const today = computed(() => new Date().toISOString().split('T')[0])
 
-// Sync refs with filters prop
 watch(
   () => props.filters,
   (newFilters) => {

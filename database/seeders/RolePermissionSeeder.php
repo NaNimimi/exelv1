@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -13,12 +12,19 @@ class RolePermissionSeeder extends Seeder
     {
         // Создание разрешений
         $permissions = [
+            // Разрешения для клиентов
             'view-clients',
             'create-clients',
             'edit-clients',
             'delete-clients',
             'add-balance',
             'view-client-by-phone',
+            // Разрешения для пользователей
+            'view-users',
+            'create-users',
+            'edit-users',
+            'delete-users',
+            'view-user-by-email',
         ];
 
         foreach ($permissions as $permission) {
@@ -29,15 +35,20 @@ class RolePermissionSeeder extends Seeder
         $adminRole = Role::create(['name' => 'admin']);
         $managerRole = Role::create(['name' => 'manager']);
 
+        // Назначение всех разрешений администратору
         $adminRole->givePermissionTo($permissions);
 
+        // Назначение ограниченных разрешений менеджеру
         $managerRole->givePermissionTo([
             'view-clients',
             'create-clients',
             'add-balance',
             'view-client-by-phone',
+            'view-users',
+            'view-user-by-email',
         ]);
 
+        // Создание администратора
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',

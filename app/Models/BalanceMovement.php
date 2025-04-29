@@ -10,6 +10,7 @@ class BalanceMovement extends Model
     protected $fillable = [
         'user_id',
         'client_id',
+        'payment_type_id',
         'amount',
         'new_balance',
         'comment',
@@ -23,5 +24,9 @@ class BalanceMovement extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+    public function paymentType()
+    {
+        return $this->belongsTo(PaymentType::class);
     }
 }

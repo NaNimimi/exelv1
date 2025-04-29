@@ -7,6 +7,9 @@ namespace App\Services;
 use App\Models\Client;
 use App\Models\ClientPhone;
 use App\Models\BalanceMovement;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ClientsExport;
+use App\Models\PaymentType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log; 
@@ -95,14 +98,17 @@ class ClientService
         return DB::transaction(function () use ($clientId, $data) {
             $client = Client::findOrFail($clientId);
 
-            $newBalance = $client->balance + $data['amount'];
+            // Apply operation (add or subtract)
+            $amount = $data['operation'] === 'subtract' ? -$data['amount'] : $data['amount'];
+            $newBalance = $client->balance + $amount;
 
             $client->update(['balance' => $newBalance]);
 
             BalanceMovement::create([
                 'user_id' => Auth::id(),
                 'client_id' => $clientId,
-                'amount' => $data['amount'],
+                'payment_type_id' => $data['payment_type_id'],
+                'amount' => $amount,
                 'new_balance' => $newBalance,
                 'comment' => $data['comment'],
             ]);
@@ -116,21 +122,20 @@ class ClientService
                     try {
                         $response = Http::get('http://localhost/notify-user', [
                             'phone_number' => $phone->phone,
-                            'amount' => $data['amount'],
+                            'amount' => $amount,
                         ]);
 
                         if (!$response->successful()) {
                             Log::warning('Failed to send notification to localhost/notify-user', [
                                 'phone_number' => $phone->phone,
-                                'amount' => $data['amount'],
+                                'amount' => $amount,
                                 'status' => $response->status(),
                             ]);
                         }
                     } catch (\Exception $e) {
-                        // Log the error but don't interrupt the transaction
                         Log::error('Error sending notification to localhost/notify-user', [
                             'phone_number' => $phone->phone,
-                            'amount' => $data['amount'],
+                            'amount' => $amount,
                             'error' => $e->getMessage(),
                         ]);
                     }
@@ -141,6 +146,14 @@ class ClientService
         });
     }
 
+    public function getPaymentTypes(): array
+    {
+        return PaymentType::all()->map(fn($type) => [
+            'id' => $type->id,
+            'name' => $type->name,
+            'currency' => $type->currency,
+        ])->toArray();
+    }
     public function findByPhone(string $phone): ?array
     {
         $client = Client::with('phones')
@@ -167,6 +180,7 @@ class ClientService
     public function getBalanceMovements(int $clientId, int $perPage = 10, ?string $startDate = null, ?string $endDate = null): LengthAwarePaginator
     {
         $query = BalanceMovement::where('client_id', $clientId)
+        ->with(['paymentType', 'user'])
             ->orderBy('created_at', 'desc');
     
         if ($startDate && $endDate) {
@@ -178,5 +192,14 @@ class ClientService
         }
     
         return $query->paginate($perPage)->appends(request()->query());
+    }
+    public function exportAll()
+    {
+        return Excel::download(new ClientsExport(), 'clients.xlsx');
+    }
+    
+    public function exportClient(int $clientId)
+    {
+        return Excel::download(new ClientsExport($clientId), "client_{$clientId}.xlsx");
     }
 }

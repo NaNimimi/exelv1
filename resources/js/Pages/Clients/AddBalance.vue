@@ -1,65 +1,45 @@
 ```vue
 <template>
-  <div class="p-8">
-    <!-- Modal Header -->
-    <div class="flex justify-between items-center mb-8">
-      <h2 class="text-2xl font-bold text-white">PUL QOSHISH</h2>
-      <button 
-        @click="$emit('close')"
-        class="text-gray-400 hover:text-white transition duration-150"
-      >
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Form Content -->
-    <form @submit.prevent="validateAndSubmit" class="grid grid-cols-1 gap-6">
-      <div>
-        <label class="text-gray-400 text-sm uppercase tracking-wider">SUMMA *</label>
-        <input 
-          v-model="form.amount" 
-          type="number" 
-          step="0.01"
-          :class="{'border-red-500': errors.amount, 'border-transparent': !errors.amount}"
-          class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-          placeholder="SUMMA KIRITING"
-          @blur="validateField('amount')"
-        />
-        <span v-if="errors.amount" class="text-red-400 text-sm mt-1">{{ errors.amount }}</span>
+  <div class="p-6">
+    <h2 class="text-2xl font-bold text-white mb-6">Add Balance for {{ client?.first_name || 'Unknown' }}</h2>
+    <form @submit.prevent="submit">
+      <div class="space-y-6">
+        <div>
+          <label for="amount" class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Amount</label>
+          <input
+            id="amount"
+            type="number"
+            step="0.01"
+            v-model="form.amount"
+            required
+            class="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <span v-if="form.errors.amount" class="text-red-400 text-sm mt-2">{{ form.errors.amount }}</span>
+        </div>
+        <div>
+          <label for="comment" class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Comment</label>
+          <textarea
+            id="comment"
+            v-model="form.comment"
+            class="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          ></textarea>
+          <span v-if="form.errors.comment" class="text-red-400 text-sm mt-2">{{ form.errors.comment }}</span>
+        </div>
       </div>
-
-      <div>
-        <label class="text-gray-400 text-sm uppercase tracking-wider">Izoh *</label>
-        <textarea 
-          v-model="form.comment"
-          :class="{'border-red-500': errors.comment, 'border-transparent': !errors.comment}"
-          class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
-          placeholder="Izoh"
-          rows="4"
-          @blur="validateField('comment')"
-        ></textarea>
-        <span v-if="errors.comment" class="text-red-400 text-sm mt-1">{{ errors.comment }}</span>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="flex justify-end space-x-4">
+      <div class="flex justify-end space-x-4 mt-6">
         <button
-          @click="$emit('close')"
-          class="px-6 py-3 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition duration-300"
+          type="button"
+          @click="emit('close')"
+          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500"
         >
-          Bekor qilish
+          Back
         </button>
-        <button 
-          type="submit" 
-          class="flex items-center bg-indigo-600 text-white px-8 py-4 rounded-full shadow-lg hover:bg-indigo-500 transition-all duration-300 ease-in-out transform hover:scale-105"
+        <button
+          type="submit"
           :disabled="form.processing"
+          class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-500"
         >
-          <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 3H5c-1.11 0-2 .89-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/>
-          </svg>
-          {{ form.processing ? 'Saqlanypti...' : 'PUL QOSHISH' }}
+          Submit
         </button>
       </div>
     </form>
@@ -68,57 +48,38 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
-import { ref } from 'vue'
 
-const { client } = defineProps(['client'])
+const props = defineProps({
+  client: {
+    type: Object,
+    default: null
+  },
+  formData: {
+    type: Object,
+    default: () => ({})
+  }
+})
 
 const emit = defineEmits(['close'])
 
 const form = useForm({
-  amount: '',
-  comment: ''
+  operation: props.formData.operation || null,
+  payment_type_id: props.formData.payment_type_id || null,
+  amount: null,
+  comment: null
 })
 
-const errors = ref({
-  amount: '',
-  comment: ''
-})
-
-const validateField = (field) => {
-  if (!form[field] || form[field].toString().trim() === '') {
-    errors.value[field] = 'This field is required'
-  } else if (field === 'amount' && (form[field] <= 0 || isNaN(form[field]))) {
-    errors.value[field] = 'Amount must be a positive number'
-  } else {
-    errors.value[field] = ''
-  }
-}
-
-const validateForm = () => {
-  validateField('amount')
-  validateField('comment')
-
-  return !Object.values(errors.value).some(error => error)
-}
-
-const validateAndSubmit = () => {
-  if (validateForm()) {
-    submit()
-  }
-}
+console.log('AddBalance props:', { client: props.client, formData: props.formData })
 
 const submit = () => {
-  form.post(`/clients/${client.id}/balance`, {
-    preserveScroll: true,
+  console.log('Submitting balance:', form.data())
+  form.post(route('clients.addBalance', props.client?.id), {
     onSuccess: () => {
+      console.log('Balance updated successfully')
       emit('close')
-      form.reset()
-      errors.value = { amount: '', comment: '' }
     },
-    onError: (formErrors) => {
-      Object.keys(formErrors).forEach(field => {
-        errors.value[field] = formErrors[field]
-      })
+    onError: (errors) => {
+      console.error('Error updating balance:', errors)
     }
   })
 }
