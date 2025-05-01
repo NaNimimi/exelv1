@@ -24,6 +24,9 @@
                 <NavLink :href="route('users.index')" :active="route().current('users.index')" class="ml-4">
                   Users
                 </NavLink>
+                <NavLink :href="route('roles.index')" :active="route().current('roles.index')" class="ml-4">
+                  Roles
+                </NavLink>
               </div>
             </div>
           </div>
@@ -43,7 +46,7 @@
             />
             <font-awesome-icon
               :icon="['fas', 'search']"
-              class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              class="absolute left-3 top-1/2 left-1 transform -translate-y-1/2 text-gray-400"
             />
             <button
               @click="openCreateModal"
