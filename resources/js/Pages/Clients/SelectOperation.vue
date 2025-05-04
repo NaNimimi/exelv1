@@ -1,20 +1,33 @@
-```vue
 <template>
   <div class="p-6">
     <h2 class="text-2xl font-bold text-white mb-6">Select Operation for {{ client.first_name }}</h2>
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <div>
-          <label for="operation" class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Operation</label>
-          <select
-            id="operation"
-            v-model="form.operation"
-            required
-            class="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="add">Пополнить</option>
-            <option value="subtract">Отнять</option>
-          </select>
+          <label class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Operation</label>
+          <div class="flex space-x-4">
+            <button
+              type="button"
+              :class="[
+                'flex-1 px-6 py-3 rounded-lg text-white transition-colors duration-200',
+                form.operation === 'add' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+              ]"
+              @click="form.operation = 'add'; submit()"
+            >
+              Пополнить
+            </button>
+            <button
+              type="button"
+              :class="[
+                'flex-1 px-6 py-3 rounded-lg text-white transition-colors duration-200',
+                form.operation === 'subtract' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+              ]"
+              @click="form.operation = 'subtract'; submit()"
+            >
+              Отнять
+            </button>
+          </div>
+          <input type="hidden" v-model="form.operation" required />
           <span v-if="form.errors.operation" class="text-red-400 text-sm mt-2">{{ form.errors.operation }}</span>
         </div>
       </div>
@@ -22,16 +35,9 @@
         <button
           type="button"
           @click="emit('close')"
-          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500"
+          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200"
         >
           Back
-        </button>
-        <button
-          type="submit"
-          :disabled="form.processing"
-          class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-500"
-        >
-          Next
         </button>
       </div>
     </form>
@@ -56,4 +62,3 @@ const submit = () => {
   emit('openPaymentTypeModal', form.data())
 }
 </script>
-```

@@ -34,15 +34,17 @@ Route::middleware([
     Route::get('/clients/{id}', [ClientController::class, 'show'])->name('clients.show');
     Route::get('/clients/export', [ClientController::class, 'exportAll'])->name('clients.export');
     Route::get('/clients/{id}/export', [ClientController::class, 'exportClient'])->name('clients.export.single');
+    Route::get('/clients/{id}/export-filtered', [ClientController::class, 'exportClientWithDateFilter'])->name('clients.export.filtered');
     Route::post('/clients/{id}/add-balance', [ClientController::class, 'addBalance'])->name('clients.addBalance');
 
     // Role Routes
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-    Route::post('/roles/{role}/permissions/assign', [RoleController::class, 'assignPermission'])->name('roles.permissions.assign');
-    Route::post('/roles/{role}/permissions/revoke', [RoleController::class, 'revokePermission'])->name('roles.permissions.revoke');
-    Route::post('/users/{user}/roles', [RoleController::class, 'assignRoleToUser'])->name('users.roles.assign');
+    Route::post('roles/{role}/permissions/assign', [RoleController::class, 'assignPermission'])->name('roles.permissions.assign')->middleware(['auth']);
+    Route::post('roles/{role}/permissions/revoke', [RoleController::class, 'revokePermission'])->name('roles.permissions.revoke')->middleware(['auth']);
+    Route::post('users/{user}/roles/assign', [RoleController::class, 'assignRoleToUser'])->name('users.roles.assign')->middleware(['auth']);
+    Route::post('users/{user}/roles/revoke', [RoleController::class, 'revokeRoleFromUser'])->name('users.roles.revoke')->middleware(['auth']);
 
     // User Routes
     Route::resource('users', UserController::class);

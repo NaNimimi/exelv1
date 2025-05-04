@@ -12,10 +12,14 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class ClientsExport implements WithMultipleSheets
 {
     protected $clientId;
+    protected $startDate;
+    protected $endDate;
 
-    public function __construct(?int $clientId = null)
+    public function __construct(?int $clientId = null, ?string $startDate = null, ?string $endDate = null)
     {
         $this->clientId = $clientId;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
     }
 
     public function sheets(): array
@@ -69,20 +73,33 @@ class ClientsExport implements WithMultipleSheets
 
         // Sheet for balance movements (only for single client)
         if ($this->clientId) {
-            $sheets[] = new class($this->clientId) implements FromCollection, WithHeadings, WithMapping {
+            $sheets[] = new class($this->clientId, $this->startDate, $this->endDate) implements FromCollection, WithHeadings, WithMapping {
                 protected $clientId;
+                protected $startDate;
+                protected $endDate;
 
-                public function __construct(int $clientId)
+                public function __construct(int $clientId, ?string $startDate, ?string $endDate)
                 {
                     $this->clientId = $clientId;
+                    $this->startDate = $startDate;
+                    $this->endDate = $endDate;
                 }
 
                 public function collection()
                 {
-                    return BalanceMovement::where('client_id', $this->clientId)
-                        ->with(['paymentType', 'user']) // Eager load paymentType and user
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+                    $query = BalanceMovement::where('client_id', $this->clientId)
+                        ->with(['paymentType', 'user'])
+                        ->orderBy('created_at', 'desc');
+
+                    // Apply date filters if provided
+                    if ($this->startDate) {
+                        $query->whereDate('created_at', '>=', $this->startDate);
+                    }
+                    if ($this->endDate) {
+                        $query->whereDate('created_at', '<=', $this->endDate);
+                    }
+
+                    return $query->get();
                 }
 
                 public function map($movement): array
@@ -92,7 +109,7 @@ class ClientsExport implements WithMultipleSheets
                         $movement->amount,
                         $movement->new_balance,
                         $movement->paymentType->name ?? 'N/A',
-                        $movement->user->name ?? 'Unknown', // Include user name
+                        $movement->user->name ?? 'Unknown',
                         $movement->comment,
                         $movement->created_at->format('Y-m-d H:i:s'),
                     ];

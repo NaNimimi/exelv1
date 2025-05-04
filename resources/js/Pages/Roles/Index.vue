@@ -1,4 +1,4 @@
-    <template>
+<template>
     <div>
         <Head title="Rollar" />
 
@@ -70,34 +70,43 @@
                         {{ role.permissions.map(p => p.name).join(', ') || 'Ruxsatlar yo\'q' }}
                         </td>
                         <td class="p-6 flex space-x-4 items-center">
-                        <button
-                            @click="openAssignPermissionModal(role)"
-                            class="text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out"
-                            title="Ruxsat biriktirish"
-                        >
-                            <font-awesome-icon :icon="['fas', 'plus']" class="w-5 h-5" />
-                        </button>
-                        <button
-                            @click="openRevokePermissionModal(role)"
-                            class="text-yellow-400 hover:text-yellow-300 transition duration-150 ease-in-out"
-                            title="Ruxsat olib tashlash"
-                        >
-                            <font-awesome-icon :icon="['fas', 'minus']" class="w-5 h-5" />
-                        </button>
-                        <button
-                            @click="openAssignRoleToUserModal(role)"
-                            class="text-green-400 hover:text-green-300 transition duration-150 ease-in-out"
-                            title="Foydalanuvchiga rol biriktirish"
-                        >
-                            <font-awesome-icon :icon="['fas', 'user-plus']" class="w-5 h-5" />
-                        </button>
-                        <button
-                            @click="confirmDeleteRole(role)"
-                            class="text-red-400 hover:text-red-300 transition duration-150 ease-in-out"
-                            title="Rolni o'chirish"
-                        >
-                            <font-awesome-icon :icon="['fas', 'trash']" class="w-5 h-5" />
-                        </button>
+                            <template v-if="role.name !== 'admin'">
+                                <button
+                                    @click="openAssignPermissionModal(role)"
+                                    class="text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out"
+                                    title="Ruxsat biriktirish"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'plus']" class="w-5 h-5" />
+                                </button>
+                                <button
+                                    @click="openRevokePermissionModal(role)"
+                                    class="text-yellow-400 hover:text-yellow-300 transition duration-150 ease-in-out"
+                                    title="Ruxsat olib tashlash"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'minus']" class="w-5 h-5" />
+                                </button>
+                                <button
+                                    @click="openAssignRoleToUserModal(role)"
+                                    class="text-green-400 hover:text-green-300 transition duration-150 ease-in-out"
+                                    title="Foydalanuvchiga rol biriktirish"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'user-plus']" class="w-5 h-5" />
+                                </button>
+                                <button
+                                    @click="openRevokeRoleFromUserModal(role)"
+                                    class="text-purple-400 hover:text-purple-300 transition duration-150 ease-in-out"
+                                    title="Foydalanuvchidan rol olib tashlash"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'user-minus']" class="w-5 h-5" />
+                                </button>
+                                <button
+                                    @click="confirmDeleteRole(role)"
+                                    class="text-red-400 hover:text-red-300 transition duration-150 ease-in-out"
+                                    title="Rolni o'chirish"
+                                >
+                                    <font-awesome-icon :icon="['fas', 'trash']" class="w-5 h-5" />
+                                </button>
+                            </template>
                         </td>
                     </tr>
                     </tbody>
@@ -146,6 +155,16 @@
             </div>
             </div>
 
+            <!-- Revoke Role from User Modal -->
+            <div
+            v-if="isRevokeRoleFromUserModalOpen"
+            class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1000]"
+            >
+            <div class="bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-auto">
+                <RevokeRoleFromUser :role="selectedRole" :users="users" @close="closeRevokeRoleFromUserModal" />
+            </div>
+            </div>
+
             <!-- Delete Role Confirmation Modal -->
             <div
             v-if="isDeleteConfirmationOpen"
@@ -178,98 +197,111 @@
         </div>
         </div>
     </div>
-    </template>
+</template>
 
-    <script setup>
-    import { Head, Link, router } from '@inertiajs/vue3';
-    import { ref } from 'vue';
-    import ApplicationMark from '@/Components/ApplicationMark.vue';
-    import Banner from '@/Components/Banner.vue';
-    import NavLink from '@/Components/NavLink.vue';
-    import CreateRole from '@/Pages/Roles/CreateRole.vue';
-    import AssignPermission from '@/Pages/Roles/AssignPermission.vue';
-    import RevokePermission from '@/Pages/Roles/RevokePermission.vue';
-    import AssignRoleToUser from '@/Pages/Roles/AssignRoleToUser.vue';
-    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-    import { library } from '@fortawesome/fontawesome-svg-core';
-    import { faPlus, faMinus, faUserPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+<script setup>
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import ApplicationMark from '@/Components/ApplicationMark.vue';
+import Banner from '@/Components/Banner.vue';
+import NavLink from '@/Components/NavLink.vue';
+import CreateRole from '@/Pages/Roles/CreateRole.vue';
+import AssignPermission from '@/Pages/Roles/AssignPermission.vue';
+import RevokePermission from '@/Pages/Roles/RevokePermission.vue';
+import AssignRoleToUser from '@/Pages/Roles/AssignRoleToUser.vue';
+import RevokeRoleFromUser from '@/Pages/Roles/RevokeRoleFromUser.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faPlus, faMinus, faUserPlus, faUserMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-    library.add(faPlus, faMinus, faUserPlus, faTrash);
+library.add(faPlus, faMinus, faUserPlus, faUserMinus, faTrash);
 
-    const props = defineProps({
+const props = defineProps({
     roles: Array,
     permissions: Array,
     users: Array,
-    });
+});
 
-    const isCreateModalOpen = ref(false);
-    const isAssignPermissionModalOpen = ref(false);
-    const isRevokePermissionModalOpen = ref(false);
-    const isAssignRoleToUserModalOpen = ref(false);
-    const isDeleteConfirmationOpen = ref(false);
-    const selectedRole = ref(null);
-    const roleToDelete = ref(null);
+const isCreateModalOpen = ref(false);
+const isAssignPermissionModalOpen = ref(false);
+const isRevokePermissionModalOpen = ref(false);
+const isAssignRoleToUserModalOpen = ref(false);
+const isRevokeRoleFromUserModalOpen = ref(false);
+const isDeleteConfirmationOpen = ref(false);
+const selectedRole = ref(null);
+const roleToDelete = ref(null);
 
-    const openCreateModal = () => {
+const openCreateModal = () => {
     isCreateModalOpen.value = true;
-    };
+};
 
-    const closeCreateModal = () => {
+const closeCreateModal = () => {
     isCreateModalOpen.value = false;
-    };
+};
 
-    const openAssignPermissionModal = (role) => {
+const openAssignPermissionModal = (role) => {
     selectedRole.value = role;
     isAssignPermissionModalOpen.value = true;
-    };
+};
 
-    const closeAssignPermissionModal = () => {
+const closeAssignPermissionModal = () => {
     isAssignPermissionModalOpen.value = false;
     selectedRole.value = null;
-    };
+};
 
-    const openRevokePermissionModal = (role) => {
+const openRevokePermissionModal = (role) => {
     selectedRole.value = role;
     isRevokePermissionModalOpen.value = true;
-    };
+};
 
-    const closeRevokePermissionModal = () => {
+const closeRevokePermissionModal = () => {
     isRevokePermissionModalOpen.value = false;
     selectedRole.value = null;
-    };
+};
 
-    const openAssignRoleToUserModal = (role) => {
+const openAssignRoleToUserModal = (role) => {
     selectedRole.value = role;
     isAssignRoleToUserModalOpen.value = true;
-    };
+};
 
-    const closeAssignRoleToUserModal = () => {
+const closeAssignRoleToUserModal = () => {
     isAssignRoleToUserModalOpen.value = false;
     selectedRole.value = null;
-    };
+};
 
-    const confirmDeleteRole = (role) => {
+const openRevokeRoleFromUserModal = (role) => {
+    selectedRole.value = role;
+    isRevokeRoleFromUserModalOpen.value = true;
+};
+
+const closeRevokeRoleFromUserModal = () => {
+    isRevokeRoleFromUserModalOpen.value = false;
+    selectedRole.value = null;
+};
+
+const confirmDeleteRole = (role) => {
     roleToDelete.value = role;
     isDeleteConfirmationOpen.value = true;
-    };
+};
 
-    const closeDeleteConfirmationModal = () => {
+const closeDeleteConfirmationModal = () => {
     isDeleteConfirmationOpen.value = false;
     roleToDelete.value = null;
-    };
+};
 
-    const deleteConfirmedRole = () => {
+const deleteConfirmedRole = () => {
     if (roleToDelete.value) {
         router.delete(route('roles.destroy', roleToDelete.value.id), {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: () => {
-            closeDeleteConfirmationModal();
-        },
-        onError: (errors) => {
-            alert('Rolni o\'chirishda xatolik yuz berdi.');
-        },
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                closeDeleteConfirmationModal();
+                alert('Rol muvaffaqiyatli o\'chirildi.');
+            },
+            onError: (errors) => {
+                alert('Rolni o\'chirishda xatolik yuz berdi.');
+            },
         });
     }
-    };
-    </script>
+};
+</script>

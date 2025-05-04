@@ -137,10 +137,13 @@ class ClientController extends Controller
     public function getByPhone(string $phone): JsonResponse
     {
         $client = Client::with('phones')
-            ->whereHas('phones', fn($q) => $q->where('phone', $phone))
+            ->whereHas('phones', function ($query) use ($phone) {
+                $query->where('phone', '=', $phone); 
+            })
             ->firstOrFail();
-
+    
         return response()->json([
+            'ok' => 'true',
             'data' => [
                 'id' => $client->id,
                 'name' => $client->first_name,
@@ -151,6 +154,9 @@ class ClientController extends Controller
     }
     public function exportAll()
     {
+        if (!Auth::user()->hasPermissionTo('export-client')) {
+            abort(403, 'Unauthorized action.');
+        }
         \Log::info('Exporting all clients');
         $clientsCount = Client::count();
         \Log::info('Clients count: ' . $clientsCount);
@@ -160,10 +166,28 @@ class ClientController extends Controller
     
     public function exportClient(int $id, Request $request)
     {
-        // if (!Auth::user()->hasPermissionTo('export-clients')) {
-        //     abort(403, 'Unauthorized action.');
-        // }
+        if (!Auth::user()->hasPermissionTo('export-clients')) {
+            abort(403, 'Unauthorized action.');
+        }
     
         return $this->clientService->exportClient($id);
+    }
+
+    public function exportClientWithDateFilter(int $id, Request $request)
+    {
+        if (!Auth::user()->hasPermissionTo('view-clients')) {
+            abort(403, 'Unauthorized action.');
+        }  
+        if (!Auth::user()->hasPermissionTo('export-clients')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        return Excel::download(
+            new ClientsExport($id, $startDate, $endDate),
+            'client_' . $id . '_details_' . ($startDate ?: 'start') . '_to_' . ($endDate ?: 'end') . '.xlsx'
+        );
     }
 }

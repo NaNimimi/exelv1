@@ -1,23 +1,32 @@
-```vue
 <template>
   <div class="p-6">
     <h2 class="text-2xl font-bold text-white mb-6">Select Payment Type for {{ client?.first_name || 'Unknown' }}</h2>
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <div>
-          <label for="payment_type_id" class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Payment Type</label>
-          <select
-            id="payment_type_id"
-            v-model="form.payment_type_id"
-            required
-            class="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            :disabled="!paymentTypes || paymentTypes.length === 0"
-          >
-            <option v-for="type in paymentTypes" :key="type.id" :value="type.id">
-              {{ type.name }} ({{ type.currency }})
-            </option>
-            <option v-if="!paymentTypes || paymentTypes.length === 0" disabled>No payment types available</option>
-          </select>
+          <label class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Payment Type</label>
+          <div class="flex flex-wrap gap-4">
+            <button
+              v-for="type in paymentTypes"
+              :key="type.id"
+              type="button"
+              :class="[
+                'px-6 py-3 rounded-lg text-white transition-colors duration-200',
+                form.payment_type_id === type.id ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+              ]"
+              :disabled="!paymentTypes || paymentTypes.length === 0"
+              @click="form.payment_type_id = type.id; submit()"
+            >
+              {{ type.name }}
+            </button>
+            <span
+              v-if="!paymentTypes || paymentTypes.length === 0"
+              class="text-gray-400 text-sm"
+            >
+              No payment types available
+            </span>
+          </div>
+          <input type="hidden" v-model="form.payment_type_id" required />
           <span v-if="form.errors.payment_type_id" class="text-red-400 text-sm mt-2">{{ form.errors.payment_type_id }}</span>
         </div>
       </div>
@@ -25,16 +34,9 @@
         <button
           type="button"
           @click="emit('close')"
-          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500"
+          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200"
         >
           Back
-        </button>
-        <button
-          type="submit"
-          :disabled="form.processing || !paymentTypes || paymentTypes.length === 0"
-          class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-500"
-        >
-          Next
         </button>
       </div>
     </form>
@@ -73,4 +75,3 @@ const submit = () => {
   emit('openBalanceModal', form.data())
 }
 </script>
-```

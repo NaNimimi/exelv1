@@ -18,15 +18,25 @@ class UserController extends Controller
         protected UserService $userService
     ) {}
 
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
+        // if (!Auth::user()->hasPermissionTo('view-users')) {
+        //     abort(403, 'Unauthorized action.');
+        // }
+
         $search = $request->input('search');
-        $users = $this->userService->all(perPage: 15, search: $search);
+        $users = User::with('roles') // Eager-load roles
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->paginate(15);
 
         return Inertia::render('Users/Index', [
             'users' => $users,
-            'title' => 'Users Dashboard',
             'filters' => ['search' => $search],
+            'title' => 'Foydalanuvchilar',
+            'auth' => Auth::user(),
         ]);
     }
 

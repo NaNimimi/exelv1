@@ -25,6 +25,8 @@ class RolePermissionSeeder extends Seeder
             'edit-users',
             'delete-users',
             'view-user-by-email',
+            'export-clients',
+            'export-client',
         ];
 
         foreach ($permissions as $permission) {

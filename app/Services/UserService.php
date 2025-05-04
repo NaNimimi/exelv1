@@ -12,7 +12,7 @@ class UserService
 {
     public function all(int $perPage = 15, ?string $search = null): LengthAwarePaginator
     {
-        $query = User::query()->orderBy('id', 'desc');
+        $query = User::query()->with('roles:name')->orderBy('id', 'desc');
 
         if ($search) {
             $query->where(function ($q) use ($search) {

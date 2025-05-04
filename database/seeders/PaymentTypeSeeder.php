@@ -11,8 +11,6 @@ class PaymentTypeSeeder extends Seeder
     {
         $paymentTypes = [
             ['name' => 'SO\'M', 'currency' => 'UZS'],
-            ['name' => 'Doller', 'currency' => '$'],
-            ['name' => 'Rubl', 'currency' => 'R'],
             ['name' => 'Uzcard', 'currency' => 'UZS'],
             ['name' => 'HUMO', 'currency' => 'UZS'],
             ['name' => 'CLICK/PAYME', 'currency' => 'UZS'],

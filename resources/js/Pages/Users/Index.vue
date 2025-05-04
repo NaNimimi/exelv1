@@ -46,7 +46,7 @@
             />
             <font-awesome-icon
               :icon="['fas', 'search']"
-              class="absolute left-3 top-1/2 left-1 transform -translate-y-1/2 text-gray-400"
+              class="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400"
             />
             <button
               @click="openCreateModal"
@@ -66,6 +66,7 @@
                     <th class="p-6 text-left font-semibold text-sm uppercase tracking-wider text-gray-400">ID</th>
                     <th class="p-6 text-left font-semibold text-sm uppercase tracking-wider text-gray-400">Ism</th>
                     <th class="p-6 text-left font-semibold text-sm uppercase tracking-wider text-gray-400">Email</th>
+                    <th class="p-6 text-left font-semibold text-sm uppercase tracking-wider text-gray-400">Rollar</th>
                     <th class="p-6 text-left font-semibold text-sm uppercase tracking-wider text-gray-400">Harakat</th>
                   </tr>
                 </thead>
@@ -78,8 +79,22 @@
                     <td class="p-6 text-gray-400">{{ user.id }}</td>
                     <td class="p-6 text-gray-100 font-medium">{{ user.name }}</td>
                     <td class="p-6 text-gray-100 font-medium">{{ user.email }}</td>
+                    <td class="p-6 text-gray-100 font-medium">
+                      <span
+                        v-if="user.roles.length"
+                        class="flex flex-wrap gap-2"
+                      >
+                        <span
+                          v-for="role in user.roles"
+                          :key="role.id"
+                          class="inline-block border border-indigo-600  text-white text-sm font-semibold px-3 py-1 rounded-full"
+                        >
+                          {{ role.name }}
+                        </span>
+                      </span>
+                      <span v-else class="text-gray-400">Rol yo'q</span>
+                    </td>
                     <td class="p-6 flex space-x-4 items-center">
-                   
                       <button
                         @click="openEditModal(user)"
                         class="text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out"
@@ -141,8 +156,6 @@
           </div>
         </div>
 
-     
-
         <div
           v-if="isDeleteConfirmationOpen"
           class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-[1010]"
@@ -184,13 +197,12 @@ import Banner from '@/Components/Banner.vue'
 import NavLink from '@/Components/NavLink.vue'
 import CreateUser from '@/Pages/Users/Create.vue'
 import EditUser from '@/Pages/Users/Edit.vue'
-import ShowUser from '@/Pages/Users/Show.vue'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUserPen, faFileLines, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faUserPen, faTrash, faSearch } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faUserPen, faFileLines, faTrash, faSearch)
+library.add(faUserPen, faTrash, faSearch)
 
 const props = defineProps({
   users: Object,
@@ -201,7 +213,6 @@ const props = defineProps({
 
 const isCreateModalOpen = ref(false)
 const isEditModalOpen = ref(false)
-const isViewModalOpen = ref(false)
 const isDeleteConfirmationOpen = ref(false)
 const selectedUser = ref(null)
 const userToDelete = ref(null)
@@ -222,16 +233,6 @@ const openEditModal = (user) => {
 
 const closeEditModal = () => {
   isEditModalOpen.value = false
-  selectedUser.value = null
-}
-
-const openViewModal = (user) => {
-  selectedUser.value = user
-  isViewModalOpen.value = true
-}
-
-const closeViewModal = () => {
-  isViewModalOpen.value = false
   selectedUser.value = null
 }
 

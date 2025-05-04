@@ -25,6 +25,12 @@
                 <NavLink :href="route('clients.index')" :active="route().current('clients.index')" class="ml-4">
                   Clients
                 </NavLink>
+                <NavLink :href="route('users.index')" :active="route().current('users.index')" class="ml-4">
+                  Users
+                </NavLink>
+                <NavLink :href="route('roles.index')" :active="route().current('roles.index')" class="ml-4">
+                  Roles
+                </NavLink>
               </div>
             </div>
           </div>
@@ -88,7 +94,16 @@
 
           <!-- Balance Movements Section -->
           <div class="mt-16">
-            <h2 class="text-3xl font-bold text-white mb-6">Balance Movements</h2>
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-3xl font-bold text-white">Balance Movements</h2>
+              <button
+                @click="exportFilteredClient"
+                class="flex items-center bg-green-600 text-white px-8 py-4 rounded-full shadow-lg hover:bg-green-500 transition-all duration-300 ease-in-out transform hover:scale-105 text-lg"
+              >
+                <font-awesome-icon :icon="['fas', 'file-excel']" class="w-6 h-6 mr-3" />
+                Export to Excel
+              </button>
+            </div>
             <!-- Date Range Filter -->
             <div class="flex flex-col sm:flex-row sm:space-x-4 mb-6">
               <div class="flex-1">
@@ -185,9 +200,15 @@ import { Head, Link } from '@inertiajs/vue3'
 import { router } from '@inertiajs/vue3'
 import { ref, watch, computed } from 'vue'
 import { debounce } from 'lodash'
+import axios from 'axios'
 import ApplicationMark from '@/Components/ApplicationMark.vue'
 import Banner from '@/Components/Banner.vue'
 import NavLink from '@/Components/NavLink.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faFileExcel)
 
 const props = defineProps({
   client: Object,
@@ -238,6 +259,27 @@ function navigateToPage(url) {
         console.error('Pagination navigation failed:', errors)
       }
     })
+  }
+}
+
+const exportFilteredClient = async () => {
+  try {
+    const response = await axios.get(route('clients.export.filtered', {
+      id: props.client.id,
+      start_date: startDate.value,
+      end_date: endDate.value
+    }), { responseType: 'blob' })
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `client_${props.client.id}_details_${startDate.value || 'start'}_to_${endDate.value || 'end'}.xlsx`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error exporting client:', error)
+    alert('Failed to export client data. Please try again.')
   }
 }
 </script>
