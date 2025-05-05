@@ -120,7 +120,7 @@ class ClientService
             if ($client->phones->isNotEmpty()) {
                 foreach ($client->phones as $phone) {
                     try {
-                        $response = Http::get('http://localhost/notify-user', [
+                        $response = Http::post('http://0.0.0.0:8002/notify-user', [
                             'phone_number' => $phone->phone,
                             'amount' => $amount,
                         ]);
