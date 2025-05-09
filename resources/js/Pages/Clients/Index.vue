@@ -351,7 +351,7 @@ const exportAllClients = async () => {
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url
-    link.setAttribute('download', 'all_clients.xlsx')
+    link.setAttribute('download', 'clients.xlsx')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -361,6 +361,7 @@ const exportAllClients = async () => {
     alert('Failed to export clients. Please try again.')
   }
 }
+
 
 const exportClient = (clientId) => {
   window.location.href = route('clients.export.single', clientId)
