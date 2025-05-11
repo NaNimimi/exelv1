@@ -4,13 +4,13 @@
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <div>
-          <label class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Operation</label>
+          <label class="block text-gray-1000 text-sm uppercase tracking-wider mb-2">Operation</label>
           <div class="flex space-x-4">
             <button
               type="button"
               :class="[
                 'flex-1 px-6 py-3 rounded-lg text-white transition-colors duration-200',
-                form.operation === 'add' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+                form.operation === 'add' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-indigo-600 hover:bg-indigo-500'
               ]"
               @click="form.operation = 'add'; submit()"
             >
@@ -20,7 +20,7 @@
               type="button"
               :class="[
                 'flex-1 px-6 py-3 rounded-lg text-white transition-colors duration-200',
-                form.operation === 'subtract' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+                form.operation === 'subtract' ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-indigo-600 hover:bg-indigo-500'
               ]"
               @click="form.operation = 'subtract'; submit()"
             >
@@ -35,7 +35,7 @@
         <button
           type="button"
           @click="emit('close')"
-          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200"
+          class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200"
         >
           Back
         </button>

@@ -157,9 +157,7 @@ class ClientController extends Controller
         if (!Auth::user()->hasPermissionTo('export-client')) {
             abort(403, 'Unauthorized action.');
         }
-        \Log::info('Exporting all clients');
         $clientsCount = Client::count();
-        \Log::info('Clients count: ' . $clientsCount);
         $export = new ClientsExport();
         return Excel::download($export, 'all_clients.xlsx');
     }

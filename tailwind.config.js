@@ -12,6 +12,8 @@ export default {
         './resources/js/**/*.vue',
     ],
 
+    darkMode: 'class', // Переключение через класс 'dark'
+
     theme: {
         extend: {
             fontFamily: {
@@ -20,5 +22,5 @@ export default {
         },
     },
 
-    plugins: [forms, typography],
+    plugins: [forms, typography], // Убрали nightwind, так как он не нужен
 };

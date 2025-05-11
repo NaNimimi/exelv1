@@ -24,6 +24,7 @@ class ClientsExport implements WithMultipleSheets
 
     public function sheets(): array
     {
+
         $sheets = [];
 
         // Sheet for client data

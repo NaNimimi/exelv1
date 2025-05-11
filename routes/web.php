@@ -32,7 +32,7 @@ Route::middleware([
     Route::resource('clients', ClientController::class);
     Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
     Route::get('/clients/{id}', [ClientController::class, 'show'])->name('clients.show');
-    Route::get('/clients/export', [ClientController::class, 'exportAll'])->name('clients.export');
+    Route::get('/clients/export/123', [ClientController::class, 'exportAll'])->name('clients.export');
     Route::get('/clients/{id}/export', [ClientController::class, 'exportClient'])->name('clients.export.single');
     Route::get('/clients/{id}/export-filtered', [ClientController::class, 'exportClientWithDateFilter'])->name('clients.export.filtered');
     Route::post('/clients/{id}/add-balance', [ClientController::class, 'addBalance'])->name('clients.addBalance');

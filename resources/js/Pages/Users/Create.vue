@@ -1,45 +1,45 @@
 <template>
-  <div class="p-6 bg-gray-800 rounded-2xl shadow-2xl">
-    <h2 class="text-2xl font-bold text-white mb-6">Foydalanuvchi yaratish</h2>
+  <div class="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Foydalanuvchi yaratish</h2>
 
     <form @submit.prevent="submit" class="space-y-6">
       <!-- Name Field -->
       <div>
-        <label for="name" class="block text-sm font-medium text-gray-300">Ism</label>
+        <label for="name" class="block text-sm font-medium text-gray-600 dark:text-gray-300">Ism</label>
         <input
           id="name"
           v-model.trim="form.name"
           type="text"
-          class="mt-1 w-full rounded-lg border-gray-600 bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
+          class="mt-1 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
           :class="{ 'border-red-500': localErrors.name || errors.name }"
         />
-        <p v-if="localErrors.name" class="mt-1 text-sm text-red-400">{{ localErrors.name }}</p>
-        <p v-if="errors.name" class="mt-1 text-sm text-red-400">{{ errors.name }}</p>
+        <p v-if="localErrors.name" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ localErrors.name }}</p>
+        <p v-if="errors.name" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.name }}</p>
       </div>
 
       <!-- Email Field -->
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+        <label for="email" class="block text-sm font-medium text-gray-600 dark:text-gray-300">Email</label>
         <input
           id="email"
           v-model.trim="form.email"
           type="email"
-          class="mt-1 w-full rounded-lg border-gray-600 bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
+          class="mt-1 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
           :class="{ 'border-red-500': localErrors.email || errors.email }"
           @input="checkEmail"
         />
-        <p v-if="localErrors.email" class="mt-1 text-sm text-red-400">{{ localErrors.email }}</p>
-        <p v-if="errors.email" class="mt-1 text-sm text-red-400">{{ errors.email }}</p>
+        <p v-if="localErrors.email" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ localErrors.email }}</p>
+        <p v-if="errors.email" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.email }}</p>
       </div>
 
       <!-- Password Field -->
       <div class="relative">
-        <label for="password" class="block text-sm font-medium text-gray-300">Parol</label>
+        <label for="password" class="block text-sm font-medium text-gray-600 dark:text-gray-300">Parol</label>
         <input
           id="password"
           v-model="form.password"
           :type="showPassword ? 'text' : 'password'"
-          class="mt-1 w-full rounded-lg border-gray-600 bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
+          class="mt-1 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
           :class="{ 'border-red-500': localErrors.password || errors.password }"
         />
         <button
@@ -49,21 +49,21 @@
         >
           <font-awesome-icon
             :icon="showPassword ? ['fas', 'eye-slash'] : ['fas', 'eye']"
-            class="text-gray-400 hover:text-gray-200 w-5 h-5"
+            class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 w-5 h-5"
           />
         </button>
-        <p v-if="localErrors.password" class="mt-1 text-sm text-red-400">{{ localErrors.password }}</p>
-        <p v-if="errors.password" class="mt-1 text-sm text-red-400">{{ errors.password }}</p>
+        <p v-if="localErrors.password" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ localErrors.password }}</p>
+        <p v-if="errors.password" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ errors.password }}</p>
       </div>
 
       <!-- Password Confirmation Field -->
       <div class="relative">
-        <label for="password_confirmation" class="block text-sm font-medium text-gray-300">Parolni tasdiqlash</label>
+        <label for="password_confirmation" class="block text-sm font-medium text-gray-600 dark:text-gray-300">Parolni tasdiqlash</label>
         <input
           id="password_confirmation"
           v-model="form.password_confirmation"
           :type="showPasswordConfirmation ? 'text' : 'password'"
-          class="mt-1 w-full rounded-lg border-gray-600 bg-gray-700 text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
+          class="mt-1 w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 transition"
           :class="{ 'border-red-500': localErrors.password_confirmation }"
         />
         <button
@@ -73,10 +73,10 @@
         >
           <font-awesome-icon
             :icon="showPasswordConfirmation ? ['fas', 'eye-slash'] : ['fas', 'eye']"
-            class="text-gray-400 hover:text-gray-200 w-5 h-5"
+            class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 w-5 h-5"
           />
         </button>
-        <p v-if="localErrors.password_confirmation" class="mt-1 text-sm text-red-400">{{ localErrors.password_confirmation }}</p>
+        <p v-if="localErrors.password_confirmation" class="mt-1 text-sm text-red-600 dark:text-red-400">{{ localErrors.password_confirmation }}</p>
       </div>
 
       <!-- Buttons -->
@@ -84,14 +84,14 @@
         <button
           type="submit"
           class="text-white px-6 py-3 rounded-full transition transform hover:scale-105"
-          :class="{ 'bg-indigo-600 hover:bg-indigo-500': !hasFormError, 'bg-red-600 hover:bg-red-500': hasFormError }"
+          :class="{ 'bg-indigo-600 hover:bg-indigo-500 dark:hover:bg-indigo-700': !hasFormError, 'bg-red-600 hover:bg-red-500 dark:hover:bg-red-700': hasFormError }"
         >
           Yaratish
         </button>
         <button
           type="button"
           @click="$emit('close')"
-          class="bg-gray-600 text-white px-6 py-3 rounded-full hover:bg-gray-500 transition transform hover:scale-105"
+          class="bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 dark:hover:bg-gray-700 transition transform hover:scale-105"
         >
           Bekor qilish
         </button>

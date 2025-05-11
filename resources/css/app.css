@@ -5,3 +5,27 @@
 [x-cloak] {
     display: none;
 }
+
+/* Базовые стили для светлой и тёмной тем */
+:root {
+    --background: #ffffff; /* Светлый фон */
+    --text: #1a202c; /* Тёмный текст */
+    --primary: #4a90e2; /* Основной цвет */
+}
+
+.dark {
+    --background: #1a202c; /* Тёмный фон */
+    --text: #e2e8f0; /* Светлый текст */
+    --primary: #63b3ed; /* Основной цвет для тёмной темы */
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+/* Пример для кастомных компонентов Jetstream */
+.btn {
+    background-color: var(--primary);
+    color: var(--text);
+}

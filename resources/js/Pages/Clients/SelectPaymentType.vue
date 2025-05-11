@@ -4,7 +4,7 @@
     <form @submit.prevent="submit">
       <div class="space-y-6">
         <div>
-          <label class="block text-gray-400 text-sm uppercase tracking-wider mb-2">Payment Type</label>
+          <label class="block text-gray-1000 text-sm uppercase tracking-wider mb-2">Payment Type</label>
           <div class="flex flex-wrap gap-4">
             <button
               v-for="type in paymentTypes"
@@ -12,7 +12,7 @@
               type="button"
               :class="[
                 'px-6 py-3 rounded-lg text-white transition-colors duration-200',
-                form.payment_type_id === type.id ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-gray-600 hover:bg-gray-500'
+                form.payment_type_id === type.id ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-indigo-600 hover:bg-indigo-500'
               ]"
               :disabled="!paymentTypes || paymentTypes.length === 0"
               @click="form.payment_type_id = type.id; submit()"
@@ -34,7 +34,7 @@
         <button
           type="button"
           @click="emit('close')"
-          class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors duration-200"
+          class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-500 transition-colors duration-200"
         >
           Back
         </button>

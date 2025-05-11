@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import ThemeSwitcher from '@/Components/ThemeSwitcher.vue'; // Импортируем ThemeSwitcher
 
 defineProps({
     title: String,
@@ -46,7 +47,7 @@ const logout = () => {
                                 </Link>
                             </div>
 
-                           <!-- Navigation Links -->
+                            <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
@@ -58,15 +59,17 @@ const logout = () => {
                                     Users
                                 </NavLink>
                                 <NavLink :href="route('roles.index')" :active="route().current('roles.index')" class="ml-4">
-                                Roles
+                                    Roles
                                 </NavLink>
                             </div>
                         </div>
-                       
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
+                            <!-- Theme Switcher -->
+                            <ThemeSwitcher /> <!-- Добавляем переключатель тем -->
+
+                            <!-- Teams Dropdown -->
                             <div class="ms-3 relative">
-                                <!-- Teams Dropdown -->
                                 <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -204,6 +207,15 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('clients.index')" :active="route().current('clients.index')">
+                            Clients
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.index')">
+                            Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('roles.index')" :active="route().current('roles.index')">
+                            Roles
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -221,6 +233,7 @@ const logout = () => {
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
+                            <ThemeSwitcher class="ml-auto" /> <!-- Добавляем переключатель тем в мобильном меню -->
                         </div>
 
                         <div class="mt-3 space-y-1">

@@ -1,12 +1,11 @@
-```vue
 <template>
-  <div class="p-8">
+  <div class="p-8 bg-white dark:bg-gray-800 rounded-2xl">
     <!-- Modal Header -->
     <div class="flex justify-between items-center mb-8">
-      <h2 class="text-2xl font-bold text-white">Klient Qoshish</h2>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Klient Qoshish</h2>
       <button 
         @click="$emit('close')"
-        class="text-gray-400 hover:text-white transition duration-150"
+        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition duration-150"
       >
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -19,64 +18,79 @@
       <!-- First Column -->
       <div class="space-y-6">
         <div>
-          <label class="text-gray-400 text-sm uppercase tracking-wider">Ism *</label>
+          <label class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider">Ism *</label>
           <input 
             v-model="form.first_name" 
-            :class="{'border-red-500': errors.first_name, 'border-transparent': !errors.first_name}"
-            class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            :class="{
+              'border-red-500': errors.first_name, 
+              'border-gray-300 dark:border-gray-600': !errors.first_name
+            }"
+            class="mt-2 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
             placeholder="Enter first name"
             @blur="validateField('first_name')"
           />
-          <span v-if="errors.first_name" class="text-red-400 text-sm mt-1">{{ errors.first_name }}</span>
+          <span v-if="errors.first_name" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.first_name }}</span>
         </div>
 
         <div>
-          <label class="text-gray-400 text-sm uppercase tracking-wider">Familiya *</label>
+          <label class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider">Familiya *</label>
           <input 
             v-model="form.lastname" 
-            :class="{'border-red-500': errors.lastname, 'border-transparent': !errors.lastname}"
-            class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            :class="{
+              'border-red-500': errors.lastname, 
+              'border-gray-300 dark:border-gray-600': !errors.lastname
+            }"
+            class="mt-2 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
             placeholder="Enter last name"
             @blur="validateField('lastname')"
           />
-          <span v-if="errors.lastname" class="text-red-400 text-sm mt-1">{{ errors.lastname }}</span>
+          <span v-if="errors.lastname" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.lastname }}</span>
         </div>
 
         <div>
-          <label class="text-gray-400 text-sm uppercase tracking-wider">Companiya Ismi *</label>
+          <label class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider">Companiya Ismi *</label>
           <input 
             v-model="form.company_name" 
-            :class="{'border-red-500': errors.company_name, 'border-transparent': !errors.company_name}"
-            class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            :class="{
+              'border-red-500': errors.company_name, 
+              'border-gray-300 dark:border-gray-600': !errors.company_name
+            }"
+            class="mt-2 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
             placeholder="Enter company name"
             @blur="validateField('company_name')"
           />
-          <span v-if="errors.company_name" class="text-red-400 text-sm mt-1">{{ errors.company_name }}</span>
+          <span v-if="errors.company_name" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.company_name }}</span>
         </div>
       </div>
 
       <!-- Second Column -->
       <div class="space-y-6">
         <div class="md:col-span-2">
-          <label class="text-gray-400 text-sm uppercase tracking-wider">Address *</label>
+          <label class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider">Address *</label>
           <textarea 
             v-model="form.address"
-            :class="{'border-red-500': errors.address, 'border-transparent': !errors.address}"
-            class="mt-2 w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+            :class="{
+              'border-red-500': errors.address, 
+              'border-gray-300 dark:border-gray-600': !errors.address
+            }"
+            class="mt-2 w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
             placeholder="Enter full address"
             rows="3"
             @blur="validateField('address')"
           ></textarea>
-          <span v-if="errors.address" class="text-red-400 text-sm mt-1">{{ errors.address }}</span>
+          <span v-if="errors.address" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.address }}</span>
         </div>
 
         <div class="md:col-span-2">
-          <label class="text-gray-400 text-sm uppercase tracking-wider">Nomeri *</label>
+          <label class="text-gray-600 dark:text-gray-400 text-sm uppercase tracking-wider">Nomeri *</label>
           <div v-for="(phone, index) in form.phones" :key="index" class="flex items-center mt-2">
             <input 
               v-model="form.phones[index]" 
-              :class="{'border-red-500': phoneErrors[index], 'border-transparent': !phoneErrors[index]}"
-              class="w-full bg-gray-700 text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
+              :class="{
+                'border-red-500': phoneErrors[index], 
+                'border-gray-300 dark:border-gray-600': !phoneErrors[index]
+              }"
+              class="w-full bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-4 py-3 border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200"
               placeholder="+998......"
               @blur="validatePhone(index)"
             />
@@ -84,7 +98,7 @@
               v-if="index > 0"
               type="button" 
               @click="removePhone(index)" 
-              class="ml-4 text-red-400 hover:text-red-300 transition duration-150 ease-in-out"
+              class="ml-4 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition duration-150 ease-in-out"
             >
               <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
@@ -94,14 +108,14 @@
           <button 
             type="button" 
             @click="addPhone" 
-            class="mt-4 flex items-center text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out"
+            class="mt-4 flex items-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition duration-150 ease-in-out"
           >
             <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
             </svg>
             Nomer qoshish
           </button>
-          <span v-if="errors.phones" class="text-red-400 text-sm mt-1">{{ errors.phones }}</span>
+          <span v-if="errors.phones" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.phones }}</span>
         </div>
       </div>
 
@@ -109,13 +123,13 @@
       <div class="md:col-span-2 flex justify-end space-x-4">
         <button
           @click="$emit('close')"
-          class="px-6 py-3 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition duration-300"
+          class="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-full hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300"
         >
           Bekor qilish
         </button>
         <button 
           type="submit" 
-          class="flex items-center bg-indigo-600 text-white px-8 py-4 rounded-full shadow-lg hover:bg-indigo-500 transition-all duration-300 ease-in-out transform hover:scale-105"
+          class="flex items-center bg-indigo-600 text-white px-8 py-4 rounded-full shadow-lg hover:bg-indigo-500 dark:hover:bg-indigo-700 transition-all duration-300 ease-in-out transform hover:scale-105"
           :disabled="form.processing"
         >
           <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -241,4 +255,3 @@ const submit = () => {
   })
 }
 </script>
-```
