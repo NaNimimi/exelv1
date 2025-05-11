@@ -366,6 +366,7 @@ const exportAllClients = async () => {
   }
 }
 
+
 const exportClient = (clientId) => {
   window.location.href = route('clients.export.single', clientId)
 }
